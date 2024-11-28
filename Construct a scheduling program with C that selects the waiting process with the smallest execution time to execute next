@@ -1,0 +1,55 @@
+#include <stdio.h>
+
+struct Process {
+    int id;         // Process ID
+    int execTime;  // Execution Time
+    int waitTime;  // Waiting Time
+};
+
+void calculateWaitingTime(struct Process proc[], int n) {
+    proc[0].waitTime = 0; // First process has no waiting time
+    for (int i = 1; i < n; i++) {
+        proc[i].waitTime = proc[i - 1].waitTime + proc[i - 1].execTime;
+    }
+}
+
+void sortProcesses(struct Process proc[], int n) {
+    struct Process temp;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (proc[j].execTime > proc[j + 1].execTime) {
+                // Swap processes
+                temp = proc[j];
+                proc[j] = proc[j + 1];
+                proc[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void displayProcesses(struct Process proc[], int n) {
+    printf("Process ID\tExecution Time\tWaiting Time\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t\t%d\t\t%d\n", proc[i].id, proc[i].execTime, proc[i].waitTime);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+    
+    struct Process proc[n];
+    
+    for (int i = 0; i < n; i++) {
+        proc[i].id = i + 1; // Assigning process ID
+        printf("Enter execution time for process %d: ", proc[i].id);
+        scanf("%d", &proc[i].execTime);
+    }
+    
+    sortProcesses(proc, n);
+    calculateWaitingTime(proc, n);
+    displayProcesses(proc, n);
+    
+    return 0;
+}
