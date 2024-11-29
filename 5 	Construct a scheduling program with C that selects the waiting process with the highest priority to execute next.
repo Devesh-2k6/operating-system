@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a process
+struct process {
+    int pid;        // Process ID
+    int burst_time; // Execution time
+    int priority;   // Priority
+};
+
+// Function to compare the priority of two processes (used for sorting)
+int compare(const void *a, const void *b) {
+    struct process *p1 = (struct process *)a;
+    struct process *p2 = (struct process *)b;
+    return p1->priority - p2->priority;
+}
+
+// Function to execute the processes based on Priority scheduling
+void priorityScheduling(struct process *proc, int n) {
+    // Sort the processes based on priority
+    qsort(proc, n, sizeof(struct process), compare);
+
+    printf("Order of execution:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Process %d (Priority: %d, Burst Time: %d)\n", proc[i].pid, proc[i].priority, proc[i].burst_time);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    struct process proc[n];
+    for (int i = 0; i < n; i++) {
+        printf("Enter burst time and priority for process %d: ", i + 1);
+        proc[i].pid = i + 1;
+        scanf("%d %d", &proc[i].burst_time, &proc[i].priority);
+    }
+
+    priorityScheduling(proc, n);
+    return 0;
+}
