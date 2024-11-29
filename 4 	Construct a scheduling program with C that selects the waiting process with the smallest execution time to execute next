@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a process
+struct process {
+    int pid;        // Process ID
+    int burst_time; // Execution time
+};
+
+// Function to compare the burst time of two processes (used for sorting)
+int compare(const void *a, const void *b) {
+    struct process *p1 = (struct process *)a;
+    struct process *p2 = (struct process *)b;
+    return p1->burst_time - p2->burst_time;
+}
+
+// Function to execute the processes based on Shortest Job First scheduling
+void SJF(struct process *proc, int n) {
+    // Sort the processes based on burst time
+    qsort(proc, n, sizeof(struct process), compare);
+
+    printf("Order of execution:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Process %d (Burst Time: %d)\n", proc[i].pid, proc[i].burst_time);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    struct process proc[n];
+    for (int i = 0; i < n; i++) {
+        printf("Enter burst time for process %d: ", i + 1);
+        proc[i].pid = i + 1;
+        scanf("%d", &proc[i].burst_time);
+    }
+
+    SJF(proc, n);
+    return 0;
+}
