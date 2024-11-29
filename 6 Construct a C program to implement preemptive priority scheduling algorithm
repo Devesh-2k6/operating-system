@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a process
+struct process {
+    int pid;         // Process ID
+    int burst_time;  // Execution time
+    int priority;    // Priority
+    int arrival_time;// Arrival time
+    int remaining_time;// Remaining execution time
+};
+
+// Function to find the process with the highest priority
+int highestPriorityProcess(struct process proc[], int n, int current_time) {
+    int highest_priority = -1;
+    int index = -1;
+    for (int i = 0; i < n; i++) {
+        if (proc[i].arrival_time <= current_time && proc[i].remaining_time > 0) {
+            if (highest_priority == -1 || proc[i].priority < highest_priority) {
+                highest_priority = proc[i].priority;
+                index = i;
+            }
+        }
+    }
+    return index;
+}
+
+void preemptivePriorityScheduling(struct process proc[], int n) {
+    int current_time = 0;
+    int completed_processes = 0;
+
+    while (completed_processes < n) {
+        int idx = highestPriorityProcess(proc, n, current_time);
+        if (idx != -1) {
+            proc[idx].remaining_time--;
+            if (proc[idx].remaining_time == 0) {
+                completed_processes++;
+            }
+        }
+        current_time++;
+    }
+
+    printf("Execution order and details:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Process %d (Priority: %d, Burst Time: %d)\n", proc[i].pid, proc[i].priority, proc[i].burst_time);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    struct process proc[n];
+    for (int i = 0; i < n; i++) {
+        printf("Enter burst time, priority, and arrival time for process %d: ", i + 1);
+        proc[i].pid = i + 1;
+        scanf("%d %d %d", &proc[i].burst_time, &proc[i].priority, &proc[i].arrival_time);
+        proc[i].remaining_time = proc[i].burst_time;
+    }
+
+    preemptivePriorityScheduling(proc, n);
+    return 0;
+}
