@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <string.h>
+
+int main() {
+    // 1. Demonstrating fcntl
+    int fd = open("example.txt", O_CREAT | O_RDWR, 0644);
+    if (fd < 0) {
+        perror("Open failed");
+        return 1;
+    }
+    printf("File opened successfully with fd: %d\n", fd);
+
+    // 2. Using lseek
+    write(fd, "Hello, UNIX!", 12); // Write some content
+    off_t pos = lseek(fd, 0, SEEK_SET); // Move back to start of file
+    printf("Current file offset: %ld\n", (long)pos);
+
+    // 3. Using stat
+    struct stat fileStat;
+    if (stat("example.txt", &fileStat) == 0) {
+        printf("File size: %ld bytes\n", fileStat.st_size);
+    } else {
+        perror("Stat failed");
+    }
+
+    // 4. Using opendir and readdir
+    DIR *dir = opendir(".");
+    if (dir) {
+        struct dirent *entry;
+        printf("Files in the current directory:\n");
+        while ((entry = readdir(dir)) != NULL) {
+            printf("  %s\n", entry->d_name);
+        }
+        closedir(dir);
+    } else {
+        perror("Opendir failed");
+    }
+
+    close(fd);
+    return 0;
+}
